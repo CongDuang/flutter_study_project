@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.grey),
         useMaterial3: false,
         textButtonTheme: const TextButtonThemeData(
           style: ButtonStyle(splashFactory: NoSplash.splashFactory),
@@ -22,6 +22,7 @@ class MyApp extends StatelessWidget {
       home: const Home(
         title: "CongDuan Flutter Demo",
       ),
+      routes: routes,
     );
   }
 }
