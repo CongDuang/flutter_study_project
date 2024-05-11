@@ -25,17 +25,6 @@ class WechatMsgItemContainer extends StatefulWidget {
 }
 
 class _WechatMsgItemContainerState extends State<WechatMsgItemContainer> {
-  Widget _buildStatusView() {
-    return Container(
-      width: 12,
-      height: 12,
-      margin: EdgeInsets.only(right: widget.isISend ? 6 : 0, left: widget.isISend ? 0 : 6),
-      child: const CupertinoActivityIndicator(
-        color: Colors.black,
-      ),
-    );
-  }
-
   Widget _buildChildView(BubbleType type) {
     if (widget.isBubbleBg) {
       return WechatBubbleView(
@@ -60,7 +49,6 @@ class _WechatMsgItemContainerState extends State<WechatMsgItemContainer> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 _buildChildView(BubbleType.receiver),
-                _buildStatusView(),
               ],
             )
           ],
@@ -81,7 +69,6 @@ class _WechatMsgItemContainerState extends State<WechatMsgItemContainer> {
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                _buildStatusView(),
                 _buildChildView(BubbleType.send),
               ],
             )

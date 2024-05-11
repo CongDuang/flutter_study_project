@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_study_project/public_widgets/wechat/models/msg.dart';
 import 'package:flutter_study_project/public_widgets/wechat/wechat_msg_item_view.dart';
 import 'package:lottie/lottie.dart';
 
@@ -12,7 +13,7 @@ class WechatSoundMsgView extends StatefulWidget {
     this.voicePlayStatusSub,
   });
 
-  final dynamic msg;
+  final Msg msg;
   final bool isISend;
   final Stream<MsgInfoStreamEv<bool>>? voicePlayStatusSub;
 
@@ -40,7 +41,7 @@ class _WechatSoundMsgViewState extends State<WechatSoundMsgView> with TickerProv
         // 播放动画
         setState(() {
           _ctrl.repeat();
-          _timer = Timer(Duration(seconds: widget.msg.mediaInfoJson?.duration ?? 1), () {
+          _timer = Timer(Duration(seconds: widget.msg.mediaInfo?.duration ?? 1), () {
             _ctrl.stop();
             _timer?.cancel();
             _ctrl.value = 1;
@@ -75,7 +76,7 @@ class _WechatSoundMsgViewState extends State<WechatSoundMsgView> with TickerProv
     return Row(
       textDirection: widget.isISend ? TextDirection.ltr : TextDirection.rtl,
       children: [
-        Text("${(widget.msg.mediaInfoJson?.duration ?? 0).toString()}''"),
+        Text("${(widget.msg.mediaInfo?.duration ?? 0).toString()}''"),
         const SizedBox(height: 4),
         RotationTransition(
           turns: AlwaysStoppedAnimation(widget.isISend ? 180 / 360 : 0),

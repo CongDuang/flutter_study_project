@@ -172,9 +172,11 @@ class _WechatRecordSoundViewState extends State<WechatRecordSoundView> {
       }
       await recorder.openRecorder();
       soundFilePath =
-          "${(await getTemporaryDirectory()).path}/wechat_sound/flutter_sound_${DateTime.now().millisecondsSinceEpoch}${ext[Codec.pcm16WAV.index]}";
+          "${(await getTemporaryDirectory()).path}/wechat_sound/sound_${DateTime.now().millisecondsSinceEpoch}${ext[Codec.pcm16WAV.index]}";
       final file = File(soundFilePath);
-      file.createSync();
+      if (!(await file.exists())) {
+        await file.create(recursive: true);
+      }
       await recorder.openRecorder();
       print('Recording started at path $soundFilePath');
       await recorder.startRecorder(
@@ -191,6 +193,7 @@ class _WechatRecordSoundViewState extends State<WechatRecordSoundView> {
   Future<void> stopRecording() async {
     try {
       await recorder.stopRecorder();
+      widget.onRecordedCallback?.call(soundFilePath);
       print('Recording stopped');
     } catch (error) {
       print('error stoped recording $error');
