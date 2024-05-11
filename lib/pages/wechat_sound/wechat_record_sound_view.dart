@@ -4,7 +4,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:flutter_study_project/pages/wechat_sound/wechat_sound_bubble_view.dart';
-import 'package:logger/logger.dart';
+import 'package:logger/logger.dart' as logger;
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -159,7 +159,7 @@ class _WechatRecordSoundViewState extends State<WechatRecordSoundView> {
   }
 
   initRecorder() {
-    recorder = FlutterSoundRecorder(logLevel: Level.error);
+    recorder = FlutterSoundRecorder(logLevel: logger.Level.error);
   }
 
   disposeRecorder() {

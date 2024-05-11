@@ -9,3 +9,5 @@
 ## demo中包括
 
 - 仿微信发送语音按钮以及overlayEntry: `/pages/wechat_sound/*`
+
+![image](https://github.com/CongDuang/flutter_study_project/blob/master/screenshot/1.png)
