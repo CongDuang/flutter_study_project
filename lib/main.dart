@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_study_project/wechat_sound/wechat_sound_page.dart' deferred as wechat_sound_page;
+import 'package:flutter_study_project/pages/wechat_sound/wechat_sound_page.dart' deferred as wechat_sound_page;
 
 void main() {
   runApp(const MyApp());

@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
-import 'package:flutter_study_project/wechat_sound/wechat_sound_bubble_view.dart';
+import 'package:flutter_study_project/pages/wechat_sound/wechat_sound_bubble_view.dart';
 import 'package:logger/logger.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -172,14 +172,14 @@ class _WechatRecordSoundViewState extends State<WechatRecordSoundView> {
       }
       await recorder.openRecorder();
       soundFilePath =
-          "${(await getTemporaryDirectory()).path}/flutter_sound_${DateTime.now().millisecondsSinceEpoch}_${ext[Codec.aacMP4.index]}";
+          "${(await getTemporaryDirectory()).path}/flutter_sound_${DateTime.now().millisecondsSinceEpoch}_${ext[Codec.mp3.index]}";
       final file = File(soundFilePath);
       file.createSync();
       await recorder.openRecorder();
       print('Recording started at path $soundFilePath');
       await recorder.startRecorder(
         toFile: soundFilePath,
-        codec: Codec.aacMP4,
+        codec: Codec.mp3,
         numChannels: 1,
         bitRate: 8000,
       );
