@@ -10,4 +10,4 @@
 
 - 仿微信发送语音按钮以及overlayEntry: `/pages/wechat_sound/*`
 
-<img src="https://github.com/CongDuang/flutter_study_project/blob/master/screenshot/1.png" width="180" height="140" alt="image"/>
+<img src="https://github.com/CongDuang/flutter_study_project/blob/master/screenshot/1.png" width="180" height="406" alt="image"/>
