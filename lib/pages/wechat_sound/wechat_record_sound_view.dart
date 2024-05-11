@@ -52,7 +52,7 @@ class _WechatRecordSoundViewState extends State<WechatRecordSoundView> {
                     ClipPath(
                       clipper: TopClipper(),
                       child: Container(
-                        color: const Color(0xFFE1E1E1),
+                        color: canCancel ? Colors.grey : const Color(0xFFE1E1E1),
                         height: bezierBoxHeight,
                       ),
                     ),
@@ -65,11 +65,14 @@ class _WechatRecordSoundViewState extends State<WechatRecordSoundView> {
                       key: _cancelBtnKey,
                       height: 60,
                       width: 60,
-                      decoration: const BoxDecoration(
+                      decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: Color(0xFFE1E1E1),
+                        color: canCancel ? Colors.grey : const Color(0xFFE1E1E1),
                       ),
-                      child: const Icon(Icons.close),
+                      child: Icon(
+                        Icons.close,
+                        color: canCancel ? Colors.white : Colors.black,
+                      ),
                     ),
                     const SizedBox(
                       height: 20,
@@ -193,7 +196,9 @@ class _WechatRecordSoundViewState extends State<WechatRecordSoundView> {
   Future<void> stopRecording() async {
     try {
       await recorder.stopRecorder();
-      widget.onRecordedCallback?.call(soundFilePath);
+      if (!canCancelNotifier.value) {
+        widget.onRecordedCallback?.call(soundFilePath);
+      }
       print('Recording stopped');
     } catch (error) {
       print('error stoped recording $error');
