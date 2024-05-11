@@ -172,14 +172,14 @@ class _WechatRecordSoundViewState extends State<WechatRecordSoundView> {
       }
       await recorder.openRecorder();
       soundFilePath =
-          "${(await getTemporaryDirectory()).path}/flutter_sound_${DateTime.now().millisecondsSinceEpoch}_${ext[Codec.mp3.index]}";
+          "${(await getTemporaryDirectory()).path}/wechat_sound/flutter_sound_${DateTime.now().millisecondsSinceEpoch}${ext[Codec.pcm16WAV.index]}";
       final file = File(soundFilePath);
       file.createSync();
       await recorder.openRecorder();
       print('Recording started at path $soundFilePath');
       await recorder.startRecorder(
         toFile: soundFilePath,
-        codec: Codec.mp3,
+        codec: Codec.pcm16WAV,
         numChannels: 1,
         bitRate: 8000,
       );

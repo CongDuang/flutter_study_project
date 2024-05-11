@@ -1,9 +1,9 @@
 class Msg {
   Msg({
     String? msgId,
-    String? msgType,
+    MsgType? msgType,
     bool? isISend,
-    int? createTime,
+    DateTime? createTime,
     MediaInfo? mediaInfo,
   }) {
     _msgId = msgId;
@@ -20,16 +20,18 @@ class Msg {
     _createTime = json['createTime'];
     _mediaInfo = json['mediaInfo'] != null ? MediaInfo.fromJson(json['mediaInfo']) : null;
   }
+
   String? _msgId;
-  String? _msgType;
+  MsgType? _msgType;
   bool? _isISend;
-  int? _createTime;
+  DateTime? _createTime;
   MediaInfo? _mediaInfo;
+
   Msg copyWith({
     String? msgId,
-    String? msgType,
+    MsgType? msgType,
     bool? isISend,
-    int? createTime,
+    DateTime? createTime,
     MediaInfo? mediaInfo,
   }) =>
       Msg(
@@ -39,10 +41,15 @@ class Msg {
         createTime: createTime ?? _createTime,
         mediaInfo: mediaInfo ?? _mediaInfo,
       );
+
   String? get msgId => _msgId;
-  String? get msgType => _msgType;
+
+  MsgType? get msgType => _msgType;
+
   bool? get isISend => _isISend;
-  int? get createTime => _createTime;
+
+  DateTime? get createTime => _createTime;
+
   MediaInfo? get mediaInfo => _mediaInfo;
 
   Map<String, dynamic> toJson() {
@@ -74,9 +81,11 @@ class MediaInfo {
     _sourceUrl = json['sourceUrl'];
     _url = json['url'];
   }
+
   int? _duration;
   String? _sourceUrl;
   String? _url;
+
   MediaInfo copyWith({
     int? duration,
     String? sourceUrl,
@@ -87,8 +96,11 @@ class MediaInfo {
         sourceUrl: sourceUrl ?? _sourceUrl,
         url: url ?? _url,
       );
+
   int? get duration => _duration;
+
   String? get sourceUrl => _sourceUrl;
+
   String? get url => _url;
 
   Map<String, dynamic> toJson() {
@@ -98,4 +110,8 @@ class MediaInfo {
     map['url'] = _url;
     return map;
   }
+}
+
+enum MsgType {
+  MSG_TYPE_SOUND;
 }

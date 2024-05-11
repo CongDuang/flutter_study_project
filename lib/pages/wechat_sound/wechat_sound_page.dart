@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:flutter_study_project/pages/wechat_sound/wechat_record_sound_view.dart';
 import 'package:flutter_study_project/public_widgets/wechat/models/msg.dart';
 import 'package:flutter_study_project/public_widgets/wechat/wechat_msg_item_view.dart';
+import 'package:flutter_study_project/utils/common_utils.dart';
 import 'package:logger/logger.dart' as logger;
 import 'package:rxdart/rxdart.dart';
 
@@ -57,8 +60,23 @@ class _WechatSoundPageState extends State<WechatSoundPage> {
             color: Colors.grey.withAlpha(20),
             height: 60,
             child: WechatRecordSoundView(
-              onRecordedCallback: (path) {
-                // msgList.add(value);
+              onRecordedCallback: (path) async {
+                final duration = await CommonUtils.getAudioDuration(File(path));
+                setState(() {
+                  msgList.add(
+                    Msg(
+                      msgId: DateTime.now().millisecondsSinceEpoch.toString(),
+                      msgType: MsgType.MSG_TYPE_SOUND,
+                      isISend: true,
+                      createTime: DateTime.now(),
+                      mediaInfo: MediaInfo(
+                        duration: duration.inSeconds,
+                        sourceUrl: path,
+                        url: "",
+                      ),
+                    ),
+                  );
+                });
               },
             ),
           )
