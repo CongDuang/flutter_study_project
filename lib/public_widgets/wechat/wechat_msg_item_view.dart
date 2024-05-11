@@ -20,6 +20,7 @@ class WechatMsgItemView extends StatefulWidget {
     this.voicePlayStatusSub,
     required this.msg,
     this.textScaleFactor = 1.0,
+    this.onClickItemView,
   });
 
   final ItemViewBuilder? itemViewBuilder;
@@ -30,6 +31,7 @@ class WechatMsgItemView extends StatefulWidget {
   final Msg msg;
 
   final double textScaleFactor;
+  final Function()? onClickItemView;
 
   @override
   State<WechatMsgItemView> createState() => _WechatMsgItemViewState();
@@ -75,6 +77,7 @@ class _WechatMsgItemViewState extends State<WechatMsgItemView> {
       bubbleColor: itemView.bubbleColor,
       child: GestureDetector(
         behavior: HitTestBehavior.translucent,
+        onTap: widget.onClickItemView,
         child: child ?? const Text("暂不支持该类型"),
       ),
     );

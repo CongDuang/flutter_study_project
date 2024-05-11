@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
+import 'package:flutter_study_project/ext/rxdart_ext.dart';
+import 'package:flutter_study_project/ext/string_ext.dart';
 import 'package:flutter_study_project/pages/wechat_sound/wechat_record_sound_view.dart';
 import 'package:flutter_study_project/public_widgets/wechat/models/msg.dart';
 import 'package:flutter_study_project/public_widgets/wechat/wechat_msg_item_view.dart';
@@ -25,7 +27,6 @@ class _WechatSoundPageState extends State<WechatSoundPage> {
   void initState() {
     soundPlayer.openPlayer();
     WidgetsFlutterBinding.ensureInitialized();
-
     super.initState();
   }
 
@@ -50,6 +51,40 @@ class _WechatSoundPageState extends State<WechatSoundPage> {
                 return WechatMsgItemView(
                   msg: msg,
                   voicePlayStatusSub: voicePlayStatusSub,
+                  onClickItemView: () async {
+                    if (msg.msgType == MsgType.MSG_TYPE_SOUND && msg.mediaInfo != null) {
+                      // 播放声音
+                      await soundPlayer.closePlayer();
+                      await soundPlayer.openPlayer();
+                      await soundPlayer.setSubscriptionDuration(Duration(seconds: msg.mediaInfo?.duration ?? 1));
+                      try {
+                        voicePlayStatusSub.addSafely(
+                          MsgInfoStreamEv(value: true, msgId: msg.msgId.toString()),
+                        );
+                        String fromURI = "";
+                        if (msg.mediaInfo?.sourceUrl != null && msg.mediaInfo!.sourceUrl!.isFileExistSync) {
+                          fromURI = msg.mediaInfo!.sourceUrl!;
+                        } else {
+                          fromURI = msg.mediaInfo!.url!;
+                        }
+                        await soundPlayer.startPlayer(
+                          fromURI: fromURI,
+                          codec: Codec.aacMP4,
+                          sampleRate: 8000,
+                          whenFinished: () {
+                            voicePlayStatusSub.addSafely(
+                              MsgInfoStreamEv(value: false, msgId: msg.msgId.toString()),
+                            );
+                          },
+                        );
+                      } catch (err) {
+                        voicePlayStatusSub.addSafely(
+                          MsgInfoStreamEv(msgId: msg.msgId.toString(), value: false),
+                        );
+                      }
+                      return;
+                    }
+                  },
                 );
               },
               itemCount: msgList.length,
@@ -62,6 +97,9 @@ class _WechatSoundPageState extends State<WechatSoundPage> {
             child: WechatRecordSoundView(
               onRecordedCallback: (path) async {
                 final duration = await CommonUtils.getAudioDuration(File(path));
+                if (duration.inSeconds < 1) {
+                  return;
+                }
                 setState(() {
                   msgList.add(
                     Msg(
