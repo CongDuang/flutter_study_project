@@ -20,7 +20,9 @@ class WechatSoundPage extends StatefulWidget {
 
 class _WechatSoundPageState extends State<WechatSoundPage> {
   final voicePlayStatusSub = PublishSubject<MsgInfoStreamEv<bool>>();
-  final FlutterSoundPlayer soundPlayer = FlutterSoundPlayer(logLevel: logger.Level.error);
+  final FlutterSoundPlayer soundPlayer = FlutterSoundPlayer(
+    logLevel: logger.Level.error,
+  );
   final msgList = <Msg>[];
 
   @override
@@ -47,22 +49,28 @@ class _WechatSoundPageState extends State<WechatSoundPage> {
             child: ListView.builder(
               reverse: true,
               itemBuilder: (context, index) {
-                final msg = msgList[index];
+                final msg = msgList.reversed.toList()[index];
                 return WechatMsgItemView(
                   msg: msg,
                   voicePlayStatusSub: voicePlayStatusSub,
                   onClickItemView: () async {
-                    if (msg.msgType == MsgType.MSG_TYPE_SOUND && msg.mediaInfo != null) {
+                    if (msg.msgType == MsgType.sound && msg.mediaInfo != null) {
                       // 播放声音
                       await soundPlayer.closePlayer();
                       await soundPlayer.openPlayer();
-                      await soundPlayer.setSubscriptionDuration(Duration(seconds: msg.mediaInfo?.duration ?? 1));
+                      await soundPlayer.setSubscriptionDuration(
+                        Duration(seconds: msg.mediaInfo?.duration ?? 1),
+                      );
                       try {
                         voicePlayStatusSub.addSafely(
-                          MsgInfoStreamEv(value: true, msgId: msg.msgId.toString()),
+                          MsgInfoStreamEv(
+                            value: true,
+                            msgId: msg.msgId.toString(),
+                          ),
                         );
                         String fromURI = "";
-                        if (msg.mediaInfo?.sourceUrl != null && msg.mediaInfo!.sourceUrl!.isFileExistSync) {
+                        if (msg.mediaInfo?.sourceUrl != null &&
+                            msg.mediaInfo!.sourceUrl!.isFileExistSync) {
                           fromURI = msg.mediaInfo!.sourceUrl!;
                         } else {
                           fromURI = msg.mediaInfo!.url!;
@@ -73,13 +81,19 @@ class _WechatSoundPageState extends State<WechatSoundPage> {
                           sampleRate: 8000,
                           whenFinished: () {
                             voicePlayStatusSub.addSafely(
-                              MsgInfoStreamEv(value: false, msgId: msg.msgId.toString()),
+                              MsgInfoStreamEv(
+                                value: false,
+                                msgId: msg.msgId.toString(),
+                              ),
                             );
                           },
                         );
                       } catch (err) {
                         voicePlayStatusSub.addSafely(
-                          MsgInfoStreamEv(msgId: msg.msgId.toString(), value: false),
+                          MsgInfoStreamEv(
+                            msgId: msg.msgId.toString(),
+                            value: false,
+                          ),
                         );
                       }
                       return;
@@ -104,7 +118,7 @@ class _WechatSoundPageState extends State<WechatSoundPage> {
                   msgList.add(
                     Msg(
                       msgId: DateTime.now().millisecondsSinceEpoch.toString(),
-                      msgType: MsgType.MSG_TYPE_SOUND,
+                      msgType: MsgType.sound,
                       isISend: true,
                       createTime: DateTime.now(),
                       mediaInfo: MediaInfo(
@@ -117,7 +131,7 @@ class _WechatSoundPageState extends State<WechatSoundPage> {
                 });
               },
             ),
-          )
+          ),
         ],
       ),
     );

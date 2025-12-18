@@ -8,8 +8,14 @@ import 'package:logger/logger.dart' as logger;
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+var loggerInstance = logger.Logger(printer: logger.PrettyPrinter());
+
 class WechatRecordSoundView extends StatefulWidget {
-  const WechatRecordSoundView({super.key, this.onRecordedCallback, this.conversationId});
+  const WechatRecordSoundView({
+    super.key,
+    this.onRecordedCallback,
+    this.conversationId,
+  });
 
   final Function(String soundFilePath)? onRecordedCallback;
   final String? conversationId;
@@ -37,7 +43,7 @@ class _WechatRecordSoundViewState extends State<WechatRecordSoundView> {
     super.initState();
   }
 
-  createOverlay() {
+  void createOverlay() {
     overlayEntry = OverlayEntry(
       builder: (BuildContext context) {
         return ValueListenableBuilder<bool>(
@@ -45,20 +51,20 @@ class _WechatRecordSoundViewState extends State<WechatRecordSoundView> {
           builder: (_, canCancel, child) {
             return Positioned(
               child: Scaffold(
-                backgroundColor: Colors.white.withOpacity(0.2),
+                backgroundColor: Colors.white.withValues(alpha: 0.2),
                 body: Column(
                   verticalDirection: VerticalDirection.up,
                   children: [
                     ClipPath(
                       clipper: TopClipper(),
                       child: Container(
-                        color: canCancel ? Colors.grey : const Color(0xFFE1E1E1),
+                        color: canCancel
+                            ? Colors.grey
+                            : const Color(0xFFE1E1E1),
                         height: bezierBoxHeight,
                       ),
                     ),
-                    const SizedBox(
-                      height: 20,
-                    ),
+                    const SizedBox(height: 20),
                     Text(canCancel ? "松开 取消" : "松开 发送"),
                     const SizedBox(height: 20),
                     Container(
@@ -67,17 +73,17 @@ class _WechatRecordSoundViewState extends State<WechatRecordSoundView> {
                       width: 60,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color: canCancel ? Colors.grey : const Color(0xFFE1E1E1),
+                        color: canCancel
+                            ? Colors.grey
+                            : const Color(0xFFE1E1E1),
                       ),
                       child: Icon(
                         Icons.close,
                         color: canCancel ? Colors.white : Colors.black,
                       ),
                     ),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    const WechatSoundBubbleView()
+                    const SizedBox(height: 20),
+                    const WechatSoundBubbleView(),
                   ],
                 ),
               ),
@@ -101,13 +107,11 @@ class _WechatRecordSoundViewState extends State<WechatRecordSoundView> {
         child: const Row(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text("按住说话"),
-          ],
+          children: [Text("按住说话")],
         ),
       ),
       onLongPressDown: (LongPressDownDetails details) {
-        debugPrint("long press down");
+        loggerInstance.d("long press down");
         createOverlay();
         initRecorder();
       },
@@ -122,7 +126,10 @@ class _WechatRecordSoundViewState extends State<WechatRecordSoundView> {
       onLongPressMoveUpdate: (LongPressMoveUpdateDetails details) {
         final globalPosition = details.globalPosition;
         getCancelBtnInfo();
-        if (cancelSize != null && cancelPosition != null && cancelSize != Size.zero && cancelPosition != Offset.zero) {
+        if (cancelSize != null &&
+            cancelPosition != null &&
+            cancelSize != Size.zero &&
+            cancelPosition != Offset.zero) {
           if (globalPosition.dx >= cancelPosition!.dx &&
               globalPosition.dx <= cancelPosition!.dx + cancelSize!.width &&
               globalPosition.dy >= cancelPosition!.dy &&
@@ -142,13 +149,14 @@ class _WechatRecordSoundViewState extends State<WechatRecordSoundView> {
     );
   }
 
-  showFloatingButtonOverlay(BuildContext context) {
+  void showFloatingButtonOverlay(BuildContext context) {
     OverlayState overlayState = Overlay.of(context);
     overlayState.insert(overlayEntry);
   }
 
-  getCancelBtnInfo() {
-    final RenderBox? renderBox = _cancelBtnKey.currentContext?.findRenderObject() as RenderBox?;
+  void getCancelBtnInfo() {
+    final RenderBox? renderBox =
+        _cancelBtnKey.currentContext?.findRenderObject() as RenderBox?;
     if (cancelPosition == null || cancelPosition == Offset.zero) {
       final position = renderBox?.localToGlobal(Offset.zero) ?? Offset.zero;
       cancelPosition = position;
@@ -158,11 +166,13 @@ class _WechatRecordSoundViewState extends State<WechatRecordSoundView> {
     }
   }
 
-  initRecorder() {
+  /// 初始化录音器
+  void initRecorder() {
     recorder = FlutterSoundRecorder(logLevel: logger.Level.error);
   }
 
-  disposeRecorder() {
+  /// 释放资源
+  void disposeRecorder() {
     // recorder.closeRecorder();
   }
 
@@ -170,7 +180,7 @@ class _WechatRecordSoundViewState extends State<WechatRecordSoundView> {
     try {
       final status = await Permission.microphone.request();
       if (status != PermissionStatus.granted) {
-        print('microphone not has Permission ');
+        loggerInstance.d('microphone not has Permission ');
         return;
       }
       await recorder.openRecorder();
@@ -181,7 +191,7 @@ class _WechatRecordSoundViewState extends State<WechatRecordSoundView> {
         await file.create(recursive: true);
       }
       await recorder.openRecorder();
-      print('Recording started at path $soundFilePath');
+      loggerInstance.d('Recording started at path $soundFilePath');
       await recorder.startRecorder(
         toFile: soundFilePath,
         codec: Codec.pcm16WAV,
@@ -189,7 +199,7 @@ class _WechatRecordSoundViewState extends State<WechatRecordSoundView> {
         bitRate: 8000,
       );
     } catch (err) {
-      print(err);
+      loggerInstance.e(err);
     }
   }
 
@@ -199,9 +209,9 @@ class _WechatRecordSoundViewState extends State<WechatRecordSoundView> {
       if (!canCancelNotifier.value) {
         widget.onRecordedCallback?.call(soundFilePath);
       }
-      print('Recording stopped');
+      loggerInstance.d('Recording stopped');
     } catch (error) {
-      print('error stoped recording $error');
+      loggerInstance.d('error stoped recording $error');
     }
   }
 
@@ -223,7 +233,12 @@ class TopClipper extends CustomClipper<Path> {
     path.lineTo(size.width, bezierHeight); //第四个点
     var firstControlPoint = Offset(size.width / 2, -bezierHeight); //曲线开始点
     var firstEndPoint = const Offset(0, bezierHeight); // 曲线结束点
-    path.quadraticBezierTo(firstControlPoint.dx, firstControlPoint.dy, firstEndPoint.dx, firstEndPoint.dy);
+    path.quadraticBezierTo(
+      firstControlPoint.dx,
+      firstControlPoint.dy,
+      firstEndPoint.dx,
+      firstEndPoint.dy,
+    );
     return path;
   }
 

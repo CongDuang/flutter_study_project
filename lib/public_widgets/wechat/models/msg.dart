@@ -18,7 +18,9 @@ class Msg {
     _msgType = json['msgType'];
     _isISend = json['isISend'];
     _createTime = json['createTime'];
-    _mediaInfo = json['mediaInfo'] != null ? MediaInfo.fromJson(json['mediaInfo']) : null;
+    _mediaInfo = json['mediaInfo'] != null
+        ? MediaInfo.fromJson(json['mediaInfo'])
+        : null;
   }
 
   String? _msgId;
@@ -33,14 +35,13 @@ class Msg {
     bool? isISend,
     DateTime? createTime,
     MediaInfo? mediaInfo,
-  }) =>
-      Msg(
-        msgId: msgId ?? _msgId,
-        msgType: msgType ?? _msgType,
-        isISend: isISend ?? _isISend,
-        createTime: createTime ?? _createTime,
-        mediaInfo: mediaInfo ?? _mediaInfo,
-      );
+  }) => Msg(
+    msgId: msgId ?? _msgId,
+    msgType: msgType ?? _msgType,
+    isISend: isISend ?? _isISend,
+    createTime: createTime ?? _createTime,
+    mediaInfo: mediaInfo ?? _mediaInfo,
+  );
 
   String? get msgId => _msgId;
 
@@ -66,11 +67,7 @@ class Msg {
 }
 
 class MediaInfo {
-  MediaInfo({
-    int? duration,
-    String? sourceUrl,
-    String? url,
-  }) {
+  MediaInfo({int? duration, String? sourceUrl, String? url}) {
     _duration = duration;
     _sourceUrl = sourceUrl;
     _url = url;
@@ -86,11 +83,7 @@ class MediaInfo {
   String? _sourceUrl;
   String? _url;
 
-  MediaInfo copyWith({
-    int? duration,
-    String? sourceUrl,
-    String? url,
-  }) =>
+  MediaInfo copyWith({int? duration, String? sourceUrl, String? url}) =>
       MediaInfo(
         duration: duration ?? _duration,
         sourceUrl: sourceUrl ?? _sourceUrl,
@@ -112,6 +105,4 @@ class MediaInfo {
   }
 }
 
-enum MsgType {
-  MSG_TYPE_SOUND;
-}
+enum MsgType { sound }
